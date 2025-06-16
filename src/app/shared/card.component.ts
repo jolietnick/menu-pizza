@@ -44,17 +44,7 @@ import { Router } from '@angular/router';
       </div>
     </div>
   `,
-  styles: `
-    .card       { transition: transform 0.2s ease-in-out; }
-    .card:hover { transform: scale(1.1); }
-    .card-price {
-      font-family: 'Mistral', serif;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #dc3545;
-      letter-spacing: 0.1em;
-    }
-  `,
+  styles: ``,
 })
 export class CardComponent {
   @Input() item!: MenuItem;

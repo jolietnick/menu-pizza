@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MenuItem } from '../models/menu-item.model';
 import { map, Observable, tap } from 'rxjs';
@@ -36,14 +36,25 @@ export class MenuService {
   );
 
   constructor(private http: HttpClient) {
+    const stored = localStorage.getItem('menu');
+    if (stored) {
+      try {
+        this.menu.set(JSON.parse(stored) as MenuItem[]);
+      } catch {
+        localStorage.removeItem('menu');
+      }
+    }
     if (this.menu().length === 0) {
       this.fetchMenu().subscribe({
         next: (data) => this.setMenu(data),
         error: (err) => console.error('Errore caricamento menu:', err),
       });
     }
-  }
 
+    effect(() => {
+      localStorage.setItem('menu', JSON.stringify(this.menu()));
+    });
+  }
   fetchMenu(): Observable<MenuItem[]> {
     return this.http.get<MenuItem[]>(this.url).pipe(
       map((items: MenuItem[]) =>

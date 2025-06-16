@@ -47,6 +47,15 @@ import { MenuItem } from '../models/menu-item.model';
               />
               <p class="card-text text-muted mb-2">{{ pizza.description }}</p>
               <p class="card-price text-center">€{{ pizza.price }}</p>
+              <div class="text-center mt-3">
+                <button
+                  type="button"
+                  class="btn btn-danger btn-lg w-100"
+                  (click)="openFullPage(pizza.id.toString())"
+                >
+                  Open Full Page
+                </button>
+              </div>
             </ng-container>
 
             <ng-template #notFound>
@@ -100,5 +109,10 @@ export class PizzaDetailComponent {
 
   close(): void {
     this.router.navigate([{ outlets: { modal: null } }]);
+  }
+
+  openFullPage(pizzaId: string) {
+    this.close();
+    this.router.navigateByUrl(`/menu/${pizzaId}`);
   }
 }

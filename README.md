@@ -12,7 +12,10 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 * **Menu** – grid of pizza cards with picture, price and short description.  
 * **Card actions** – increase, decrease or remove quantity; the running total is kept in a cart badge.  
 * **Cart** – opens as a modal; shows chosen items with price and quantity, totals, clear, close (and keep shopping) and buy buttons.  
-* **Pizza detail** – each card is clickable; a modal shows the larger image and full description.  
+* **Pizza detail** – each card is clickable; a modal shows the larger image and full description.
+* **Cart** – opens as a modal; shows chosen items with price and quantity, totals, clear, close (and keep shopping) and buy buttons. Cart content is saved locally so it persists when reloading pages.
+* **Pizza detail** – each card is clickable; a modal shows the larger image and full description.
+* **Full detail page** – navigate to `/menu/:id` for a dedicated page showing the pizza details.
 * **404 page** – simple fallback for unknown routes.
 * **Navbar and Footbar Components** - standalone components. The navbar has a logo, a title and the three requested routes (Home, Menu, Cart), while the footbar is really just a cute placeholder. 
 
