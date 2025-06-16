@@ -6,7 +6,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   imports: [RouterLink, RouterLinkActive],
   template: `
     <nav class="navbar navbar-expand-md bg-light sticky-top">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" routerLink="home">
         <img
           src="/assets/logo_nick.png"
           width="auto"

@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { MenuService } from '../services/menu.service';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-home',
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   template: `
     <div class="container-fluid p-0">
       <div
@@ -36,8 +38,15 @@ import { RouterLink } from '@angular/router';
       <div class="text-center">
         <a routerLink="/menu" class="btn btn-danger btn-lg">Scopri il Menu</a>
       </div>
-
     </div>
+
+    <button
+      class="cart-tab"
+      (click)="openCart()"
+      *ngIf="menuService.totalQuantity() > 0"
+    >
+      Cart ({{ menuService.totalQuantity() }})
+    </button>
   `,
   styles: `
 .hero-section .overlay {
@@ -64,4 +73,11 @@ import { RouterLink } from '@angular/router';
 }
 `,
 })
-export class HomeComponent {}
+export class HomeComponent {
+  readonly menuService = inject(MenuService);
+  readonly router = inject(Router);
+
+  openCart() {
+    this.router.navigate([{ outlets: { modal: 'cart' } }]);
+  }
+}
