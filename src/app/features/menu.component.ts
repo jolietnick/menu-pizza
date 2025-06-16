@@ -13,7 +13,19 @@ import { Router, ActivatedRoute } from '@angular/router';
     <div class="container">
       <h1 class="text-center my-5 text-danger">Menu</h1>
 
-      <div class="row">
+      <div
+        *ngIf="menu().length === 0"
+        class="d-flex justify-content-center align-items-center"
+      >
+        <div
+          class="spinner-border text-danger"
+          style="width: 5rem; height: 5rem;"
+          role="status"
+        >
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <div *ngIf="menu().length > 0" class="row">
         <div
           class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4"
           *ngFor="let item of menu()"

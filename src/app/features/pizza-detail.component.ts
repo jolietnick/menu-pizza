@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MenuService } from '../services/menu.service';
@@ -6,7 +6,6 @@ import { MenuItem } from '../models/menu-item.model';
 
 @Component({
   selector: 'app-pizza-detail',
-  standalone: true,
   imports: [CommonModule],
   template: `
     <div
@@ -27,20 +26,32 @@ import { MenuItem } from '../models/menu-item.model';
             (click)="close()"
           ></button>
 
-          <ng-container *ngIf="pizza; else notFound">
-            <h2 class="mb-3">{{ pizza.name }}</h2>
-            <img
-              [src]="pizza.image"
-              [alt]="pizza.name"
-              class="img-fluid mb-3"
-              style="max-height:250px; object-fit:cover;"
-            />
-            <p class="card-text text-muted mb-2">{{ pizza.description }}</p>
-            <p class="card-price text-center">€{{ pizza.price }}</p>
+          <ng-container *ngIf="menu().length === 0; else loaded">
+            <div
+              class="d-flex justify-content-center align-items-center"
+              style="height:200px;"
+            >
+              <div class="spinner-border text-danger" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
           </ng-container>
+          <ng-template #loaded>
+            <ng-container *ngIf="pizza; else notFound">
+              <h2 class="mb-3">{{ pizza.name }}</h2>
+              <img
+                [src]="pizza.image"
+                [alt]="pizza.name"
+                class="img-fluid mb-3"
+                style="max-height:250px; object-fit:cover;"
+              />
+              <p class="card-text text-muted mb-2">{{ pizza.description }}</p>
+              <p class="card-price text-center">€{{ pizza.price }}</p>
+            </ng-container>
 
-          <ng-template #notFound>
-            <p>Mamma mia! We don't do this pizza, my friend</p>
+            <ng-template #notFound>
+              <p>Mamma mia! We don't do this pizza, my friend</p>
+            </ng-template>
           </ng-template>
         </div>
       </div>
@@ -76,12 +87,15 @@ export class PizzaDetailComponent {
   private readonly menuService = inject(MenuService);
   private readonly router = inject(Router);
 
+  readonly menu = this.menuService.getMenu();
   pizza?: MenuItem;
 
   constructor() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    const menu = this.menuService.getMenu()();
-    this.pizza = menu.find((p) => p.id === id);
+    effect(() => {
+      const id = Number(this.route.snapshot.paramMap.get('id'));
+      const menu = this.menuService.getMenu()();
+      this.pizza = menu.find((p) => p.id === id);
+    });
   }
 
   close(): void {
