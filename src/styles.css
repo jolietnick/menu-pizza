@@ -1,0 +1,61 @@
+@font-face {
+  font-family: "Mistral";
+  src: url("/assets/MISTRAL.TTF") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Sauce Tomato";
+  src: local("Sauce Tomato Regular"),
+    url("assets/Sauce\ Tomato.woff") format("woff");
+  font-style: normal;
+  font-weight: normal;
+}
+
+body {
+  font-family: "Sauce Tomato", serif;
+  font-size: 36px;
+}
+
+
+h1 {
+  font-size: 4rem;
+  font-family: 'Mistral', serif;
+}
+
+h2 {
+  font-size: 3rem;
+}
+.cart-tab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #dc3545;
+  color: white;
+  border: 1px solidrgb(210, 111, 121);
+  border-radius: 50px;
+  padding: 10px 20px;
+  font-size: 26px;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.cart-tab:hover {
+  background-color: #c82333;
+}
+
+.card-title {
+  font-size: 2rem;
+}
+
+.card-text {
+  font-size: 1.3rem;
+}
+
+@media (max-width: 767px) {
+  .cart-tab {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
