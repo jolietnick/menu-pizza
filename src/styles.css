@@ -74,3 +74,12 @@ h2 {
     font-size: 14px;
   }
 }
+@media (max-width: 575.98px) {
+  body {
+    font-size: 16px;
+  }
+
+  .hero-section .overlay {
+    padding: 16px;
+  }
+}

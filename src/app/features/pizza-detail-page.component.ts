@@ -9,9 +9,6 @@ import { MenuItem } from '../models/menu-item.model';
   imports: [CommonModule],
   template: `
     <div class="container py-4">
-      <button type="button" class="btn btn-danger btn-lg" (click)="goBack()">
-        Go back to menu
-      </button>
       <ng-container *ngIf="menu().length === 0; else loaded">
         <div
           class="d-flex justify-content-center align-items-center"
@@ -24,21 +21,32 @@ import { MenuItem } from '../models/menu-item.model';
       </ng-container>
       <ng-template #loaded>
         <ng-container *ngIf="pizza; else notFound">
-          <h2 class="mb-3">{{ pizza.name }}</h2>
-          <img
-            [src]="pizza.image"
-            [alt]="pizza.name"
-            class="img-fluid mb-3"
-            style="max-height:250px; object-fit:cover;"
-          />
-          <p class="card-text text-muted mb-2">{{ pizza.description }}</p>
-          <p class="card-price text-center">€{{ pizza.price }}</p>
+          <div class="container">
+            <h2 class="mb-3 text-danger">{{ pizza.name }}</h2>
+            <img
+              [src]="pizza.image"
+              [alt]="pizza.name"
+              class="img-fluid mb-3 rounded"
+              style="max-height:500px; object-fit:cover;"
+            />
+            <p class="card-text fs-2 text-muted mb-2">{{ pizza.description }}</p>
+            <p class="card-price fs-2">€{{ pizza.price }}</p>
+          </div>
         </ng-container>
         <ng-template #notFound>
           <p>Mamma mia! We don't do this pizza, my friend</p>
         </ng-template>
       </ng-template>
+
+      <button
+        type="button"
+        class="btn btn-success btn-lg mb-5"
+        (click)="goBack()"
+      >
+        ◄ Go back to menu
+      </button>
     </div>
+
     <button
       class="cart-tab"
       (click)="openCart()"
@@ -47,7 +55,11 @@ import { MenuItem } from '../models/menu-item.model';
       Cart ({{ menuService.totalQuantity() }})
     </button>
   `,
-  styles: [``],
+  styles: [`
+    h2 {
+      font-size: 3rem;
+    }
+    `],
 })
 export class PizzaDetailPageComponent {
   private readonly route = inject(ActivatedRoute);
