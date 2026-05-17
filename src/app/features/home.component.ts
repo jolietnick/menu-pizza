@@ -1,17 +1,25 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MenuService } from '../services/menu.service';
-import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, NgOptimizedImage],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="container-fluid p-0">
       <div
         class="hero-section d-flex align-items-center justify-content-center text-white text-center"
       >
         <div class="overlay p-4 rounded">
-          <img src="assets/logo_nick.png" alt="Logo" class="mb-4" />
+          <img
+            ngSrc="assets/logo_nick.png"
+            width="219"
+            height="300"
+            alt="Nick's Pizza Logo"
+            class="mb-4"
+          />
           <h1 class="display-1">Nick's Pizza</h1>
           <p class="lead">Tradizione & Gusto Autentico</p>
         </div>
@@ -40,13 +48,11 @@ import { CommonModule } from '@angular/common';
       </div>
     </div>
 
-    <button
-      class="cart-tab"
-      (click)="openCart()"
-      *ngIf="menuService.totalQuantity() > 0"
-    >
-      Cart ({{ menuService.totalQuantity() }})
-    </button>
+    @if (menuService.totalQuantity() > 0) {
+      <button class="cart-tab" (click)="openCart()">
+        Cart ({{ menuService.totalQuantity() }})
+      </button>
+    }
   `,
   styles: `
 .hero-section .overlay {
@@ -69,7 +75,8 @@ import { CommonModule } from '@angular/common';
 }
 
 .overlay img {
-  width: 300px;
+  width: 219px;
+  height: auto;
 }
 `,
 })

@@ -1,15 +1,18 @@
-import { Component, effect, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { MenuService } from '../services/menu.service';
-import { MenuItem } from '../models/menu-item.model';
 
 @Component({
   selector: 'app-pizza-detail-page',
-  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="container py-4">
-      <ng-container *ngIf="menu().length === 0; else loaded">
+      @if (menu().length === 0) {
         <div
           class="d-flex justify-content-center align-items-center"
           style="height:200px;"
@@ -18,25 +21,23 @@ import { MenuItem } from '../models/menu-item.model';
             <span class="visually-hidden">Loading...</span>
           </div>
         </div>
-      </ng-container>
-      <ng-template #loaded>
-        <ng-container *ngIf="pizza; else notFound">
+      } @else {
+        @if (pizza(); as selectedPizza) {
           <div class="container">
-            <h2 class="mb-3 text-danger">{{ pizza.name }}</h2>
+            <h2 class="mb-3 text-danger">{{ selectedPizza.name }}</h2>
             <img
-              [src]="pizza.image"
-              [alt]="pizza.name"
+              [src]="selectedPizza.image"
+              [alt]="selectedPizza.name"
               class="img-fluid mb-3 rounded"
               style="max-height:500px; object-fit:cover;"
             />
-            <p class="card-text fs-2 text-muted mb-2">{{ pizza.description }}</p>
-            <p class="card-price fs-2">€{{ pizza.price }}</p>
+            <p class="card-text fs-2 text-muted mb-2">{{ selectedPizza.description }}</p>
+            <p class="card-price fs-2">€{{ selectedPizza.price }}</p>
           </div>
-        </ng-container>
-        <ng-template #notFound>
+        } @else {
           <p>Mamma mia! We don't do this pizza, my friend</p>
-        </ng-template>
-      </ng-template>
+        }
+      }
 
       <button
         type="button"
@@ -47,13 +48,11 @@ import { MenuItem } from '../models/menu-item.model';
       </button>
     </div>
 
-    <button
-      class="cart-tab"
-      (click)="openCart()"
-      *ngIf="menuService.totalQuantity() > 0"
-    >
-      Cart ({{ menuService.totalQuantity() }})
-    </button>
+    @if (menuService.totalQuantity() > 0) {
+      <button class="cart-tab" (click)="openCart()">
+        Cart ({{ menuService.totalQuantity() }})
+      </button>
+    }
   `,
   styles: [`
     h2 {
@@ -67,15 +66,10 @@ export class PizzaDetailPageComponent {
   private readonly router = inject(Router);
 
   readonly menu = this.menuService.getMenu();
-  pizza?: MenuItem;
-
-  constructor() {
-    effect(() => {
+  readonly pizza = computed(() => {
       const id = Number(this.route.snapshot.paramMap.get('id'));
-      const menu = this.menuService.getMenu()();
-      this.pizza = menu.find((p) => p.id === id);
-    });
-  }
+      return this.menu().find((p) => p.id === id);
+  });
 
   goBack(): void {
     this.router.navigateByUrl('/menu');

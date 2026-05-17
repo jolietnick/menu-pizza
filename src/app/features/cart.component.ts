@@ -1,93 +1,91 @@
 // src/app/features/cart.component.ts
-import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuService } from '../services/menu.service';
 
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- Alert di successo -->
-    <div
-      class="alert alert-success position-fixed start-50 top-50 translate-middle-x"
-      *ngIf="showSuccess()"
-      role="alert"
-    >
-      Thanks for your order! Piping hot pizzas are on their way!
-    </div>
+    @if (showSuccess()) {
+      <div
+        class="alert alert-success position-fixed start-50 top-50 translate-middle-x"
+        role="alert"
+      >
+        Thanks for your order! Piping hot pizzas are on their way!
+      </div>
+    }
 
     <!-- Modal del carrello -->
-    <div
-      *ngIf="isModalOpen()"
-      class="modal fade show d-block"
-      id="cartModal"
-      tabindex="-1"
-      aria-labelledby="cartModalLabel"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="cartModalLabel">Your Check</h4>
-            <button
-              type="button"
-              class="btn-close"
-              (click)="closeModal()"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <ng-container>
-              <ul
-                class="list-group"
-                *ngIf="menuService.cartItems().length > 0; else emptyCart"
-              >
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center"
-                  *ngFor="let item of menuService.cartItems()"
-                >
-                  <span class="cart-subtotal-item"
-                    >{{ item.name }}</span><span class="cart-subtotal-prices"> ({{ item.quantity }} × €{{
-                      item.price.toFixed(2)
-                    }})</span
-                  >
-                  <span class=cart-subtotal>€{{ (item.quantity * item.price).toFixed(2) }}</span>
-                </li>
-              </ul>
-              <ng-template #emptyCart>
+    @if (isModalOpen()) {
+      <div
+        class="modal fade show d-block"
+        id="cartModal"
+        tabindex="-1"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cartModalLabel"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="cartModalLabel">Your Check</h4>
+              <button
+                type="button"
+                class="btn-close"
+                aria-label="Close cart"
+                (click)="closeModal()"
+              ></button>
+            </div>
+            <div class="modal-body">
+              @if (menuService.cartItems().length > 0) {
+                <ul class="list-group">
+                  @for (item of menuService.cartItems(); track item.id) {
+                    <li
+                      class="list-group-item d-flex justify-content-between align-items-center"
+                    >
+                      <span class="cart-subtotal-item">{{ item.name }}</span>
+                      <span class="cart-subtotal-prices">
+                        ({{ item.quantity }} x €{{ item.price.toFixed(2) }})
+                      </span>
+                      <span class="cart-subtotal">
+                        €{{ (item.quantity * item.price).toFixed(2) }}
+                      </span>
+                    </li>
+                  }
+                </ul>
+                <p class="mt-3 text-end">
+                  <strong>Totale: €{{ menuService.totalPrice().toFixed(2) }}</strong>
+                </p>
+              } @else {
                 <p class="text-center">Your cart is empty</p>
-              </ng-template>
-              <p class="mt-3 text-end" *ngIf="menuService.cartItems().length > 0">
-                <strong>Totale: €{{ menuService.totalPrice().toFixed(2) }}</strong>
-              </p>
-            </ng-container>
-          </div>
-          <div class="modal-footer">
-            <button
-              class="btn btn-danger"
-              (click)="clearCart()"
-              [disabled]="menuService.cartItems().length === 0"
-            >
-              Clear Cart
-            </button>
-            <button class="btn btn-secondary" (click)="closeModal()">
-              Close
-            </button>
-            <button
-              class="btn btn-success"
-              (click)="buy()"
-              [disabled]="menuService.cartItems().length === 0"
-            >
-              Buy
-            </button>
+              }
+            </div>
+            <div class="modal-footer">
+              <button
+                class="btn btn-danger"
+                (click)="clearCart()"
+                [disabled]="menuService.cartItems().length === 0"
+              >
+                Clear Cart
+              </button>
+              <button class="btn btn-secondary" (click)="closeModal()">
+                Close
+              </button>
+              <button
+                class="btn btn-success"
+                (click)="buy()"
+                [disabled]="menuService.cartItems().length === 0"
+              >
+                Buy
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div
-      *ngIf="isModalOpen()"
-      class="modal-backdrop fade show"
-      (click)="closeModal()"
-    ></div>
+      <div class="modal-backdrop fade show" (click)="closeModal()"></div>
+    }
   `,
   styles: [
     `

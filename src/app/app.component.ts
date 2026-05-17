@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './core/navbar.component';
 import { FooterComponent } from "./core/footer.component";
@@ -6,6 +6,7 @@ import { FooterComponent } from "./core/footer.component";
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, NavbarComponent, FooterComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="container"><app-navbar></app-navbar></div>
 

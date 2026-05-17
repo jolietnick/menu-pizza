@@ -1,18 +1,20 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, NgOptimizedImage],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nav class="navbar navbar-expand-md bg-light sticky-top">
       <a class="navbar-brand" routerLink="home">
         <img
-          src="/assets/logo_nick.png"
-          width="auto"
+          ngSrc="/assets/logo_nick.png"
+          width="73"
           height="100"
           alt="Nick's Pizza Logo"
-          class="d-inline-block"
+          class="navbar-logo d-inline-block"
         />
         Nick's Pizza
       </a>
@@ -60,6 +62,10 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   .navbar-brand {
     font-family: "Mistral";
     font-size: 2.5rem;
+  }
+  .navbar-logo {
+    width: 73px;
+    height: auto;
   }
   .nav-link.active {
   background-color: 	#DC3545 !important;

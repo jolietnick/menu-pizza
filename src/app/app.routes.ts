@@ -1,21 +1,47 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './features/home.component';
-import { MenuComponent } from './features/menu.component';
-import { FilenotfoundComponent } from './core/filenotfound.component';
-import { CartComponent } from './features/cart.component';
-import { PizzaDetailComponent } from './features/pizza-detail.component';
-import { PizzaDetailPageComponent } from './features/pizza-detail-page.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent },
+  {
+    path: 'home',
+    loadComponent: () =>
+      import('./features/home.component').then((m) => m.HomeComponent),
+  },
 
-  { path: 'menu', component: MenuComponent },
-  { path: 'menu/:id', component: PizzaDetailComponent, outlet: 'modal' },
-  { path: 'menu/:id', component: PizzaDetailPageComponent },
+  {
+    path: 'menu',
+    loadComponent: () =>
+      import('./features/menu.component').then((m) => m.MenuComponent),
+  },
+  {
+    path: 'menu/:id',
+    outlet: 'modal',
+    loadComponent: () =>
+      import('./features/pizza-detail.component').then(
+        (m) => m.PizzaDetailComponent
+      ),
+  },
+  {
+    path: 'menu/:id',
+    loadComponent: () =>
+      import('./features/pizza-detail-page.component').then(
+        (m) => m.PizzaDetailPageComponent
+      ),
+  },
 
-  { path: 'cart', component: CartComponent, outlet: 'modal' },
+  {
+    path: 'cart',
+    outlet: 'modal',
+    loadComponent: () =>
+      import('./features/cart.component').then((m) => m.CartComponent),
+  },
 
-  { path: '404', component: FilenotfoundComponent },
+  {
+    path: '404',
+    loadComponent: () =>
+      import('./core/filenotfound.component').then(
+        (m) => m.FilenotfoundComponent
+      ),
+  },
   { path: '**', redirectTo: '404' },
 ];

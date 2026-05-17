@@ -1,10 +1,11 @@
-import { computed, Injectable, signal, effect } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MenuItem } from '../models/menu-item.model';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
+  private readonly http = inject(HttpClient);
   private url = 'https://my-json-server.typicode.com/zoelounge/menupizza/cards';
   private menu = signal<MenuItem[]>([]);
 
@@ -35,7 +36,7 @@ export class MenuService {
     this.cartItems().reduce((sum, item) => sum + item.quantity * item.price, 0)
   );
 
-  constructor(private http: HttpClient) {
+  constructor() {
     const stored = localStorage.getItem('menu');
     if (stored) {
       try {

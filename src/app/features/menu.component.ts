@@ -1,51 +1,50 @@
 // menu.component.ts
-import { Component, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CardComponent } from '../shared/card.component';
 import { MenuItem } from '../models/menu-item.model';
 import { MenuService } from '../services/menu.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, CardComponent],
+  imports: [CardComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="container">
       <h1 class="text-center my-5 text-danger">Menu</h1>
 
-      <div
-        *ngIf="menu().length === 0"
-        class="d-flex justify-content-center align-items-center"
-      >
+      @if (menu().length === 0) {
         <div
-          class="spinner-border text-danger"
-          style="width: 5rem; height: 5rem;"
-          role="status"
+          class="d-flex justify-content-center align-items-center"
         >
-          <span class="visually-hidden">Loading...</span>
+          <div
+            class="spinner-border text-danger"
+            style="width: 5rem; height: 5rem;"
+            role="status"
+          >
+            <span class="visually-hidden">Loading...</span>
+          </div>
         </div>
-      </div>
-      <div *ngIf="menu().length > 0" class="row">
-        <div
-          class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4"
-          *ngFor="let item of menu()"
-        >
-          <app-card
-            [item]="item"
-            (increase)="increase(item)"
-            (decrease)="decrease(item)"
-            (removeItem)="remove(item)"
-          ></app-card>
+      } @else {
+        <div class="row">
+          @for (item of menu(); track item.id) {
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+              <app-card
+                [item]="item"
+                (increase)="increase(item)"
+                (decrease)="decrease(item)"
+                (removeItem)="remove(item)"
+              />
+            </div>
+          }
         </div>
-      </div>
+      }
 
-      <button
-        class="cart-tab"
-        (click)="openCart()"
-        *ngIf="menuService.totalQuantity() > 0"
-      >
-        Cart ({{ menuService.totalQuantity() }})
-      </button>
+      @if (menuService.totalQuantity() > 0) {
+        <button class="cart-tab" (click)="openCart()">
+          Cart ({{ menuService.totalQuantity() }})
+        </button>
+      }
     </div>
   `,
   styles: [``],
@@ -53,11 +52,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class MenuComponent {
   readonly menuService = inject(MenuService);
   readonly router = inject(Router);
-  readonly route = inject(ActivatedRoute);
 
   menu = this.menuService.getMenu();
-
-  constructor() {}
 
   openCart() {
     this.router.navigate([{ outlets: { modal: 'cart' } }]);
